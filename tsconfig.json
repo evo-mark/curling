@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"module": "Node16",
+		"target": "ES2022",
+        "allowJs": true,
+		"checkJs": false,
+        "strict": false,
+		"lib": [
+			"ES2022",
+            "DOM"
+		]
+	},
+    "include": ["env.d.ts","src/**/*.ts","src/**/*.js"],
+	"exclude": [
+		"node_modules"
+	],
+    "references": [{ "path": "./tsconfig.node.json" }]
+}

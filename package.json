@@ -1,0 +1,277 @@
+{
+    "name": "evomark-curling",
+    "displayName": "Curling",
+    "description": "Make and save API requests directly in your VSCode project",
+    "version": "0.1.0",
+    "publisher": "evomark",
+    "engines": {
+        "vscode": "^1.95.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [],
+    "main": "dist/extension/index.js",
+    "contributes": {
+        "configuration": [
+            {
+                "id": "secrets",
+                "title": "Secrets",
+                "order": 1,
+                "properties": {
+                    "curling.secrets.provider": {
+                        "type": "string",
+                        "enum": [
+                            "hashicorp"
+                        ],
+                        "enumItemLabels": [
+                            "HashiCorp Vault"
+                        ],
+                        "default": "hashicorp",
+                        "description": "Your secrets are stored in a Hashicorp Vault"
+                    }
+                }
+            },
+            {
+                "id": "proxy",
+                "title": "Proxy",
+                "order": 2,
+                "type": "object",
+                "properties": {
+                    "curling.proxy.enabled": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Enable a proxy server for requests",
+                        "order": 1
+                    },
+                    "curling.proxy.protocol": {
+                        "type": "string",
+                        "enum": [
+                            "HTTP",
+                            "HTTPS"
+                        ],
+                        "default": "HTTP",
+                        "description": "Protocol to use for proxy connection",
+                        "order": 2
+                    },
+                    "curling.proxy.hostname": {
+                        "type": "string",
+                        "default": "",
+                        "order": 3
+                    },
+                    "curling.proxy.port": {
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "default": null,
+                        "order": 4
+                    },
+                    "curling.proxy.auth": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Use username/password authentication when sending proxy requests",
+                        "order": 5
+                    },
+                    "curling.proxy.username": {
+                        "title": "Username",
+                        "type": "string",
+                        "default": "",
+                        "markdownDescription": "Your proxy password is saved separately using VSCode's secure storage. Click here to set your password securely: [Set password](command:evomark-curling.setProxyPassword)",
+                        "order": 6
+                    }
+                }
+            }
+        ],
+        "commands": [
+            {
+                "command": "evomark-curling.setProxyPassword",
+                "title": "Set Proxy Password"
+            },
+            {
+                "command": "evomark-curling.openSettings",
+                "title": "Open Settings",
+                "icon": "$(settings-gear)"
+            },
+            {
+                "command": "evomark-curling.showRequestPage",
+                "title": "Curling: Show Request"
+            },
+            {
+                "command": "evomark-curling.showCollectionPage",
+                "title": "Curling: Show Collection"
+            },
+            {
+                "command": "evomark-curling.refreshCollections",
+                "title": "Refresh Collections",
+                "icon": "$(refresh)"
+            },
+            {
+                "command": "evomark-curling.createCollection",
+                "title": "Create New Collection",
+                "icon": "$(plus)"
+            },
+            {
+                "command": "evomark-curling.createRequest",
+                "title": "Create New Request"
+            },
+            {
+                "command": "evomark-curling.duplicateCollection",
+                "title": "Duplicate Collection"
+            },
+            {
+                "command": "evomark-curling.renameCollection",
+                "title": "Rename Collection"
+            },
+            {
+                "command": "evomark-curling.deleteCollection",
+                "title": "Delete Collection",
+                "icon": "$(trash)"
+            },
+            {
+                "command": "evomark-curling.renameRequest",
+                "title": "Rename"
+            },
+            {
+                "command": "evomark-curling.duplicateRequest",
+                "title": "Duplicate"
+            },
+            {
+                "command": "evomark-curling.executeRequest",
+                "title": "Run"
+            },
+            {
+                "command": "evomark-curling.deleteRequest",
+                "title": "Delete"
+            }
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "curling-centre",
+                    "title": "Curling Centre",
+                    "icon": "$(repo-force-push)"
+                }
+            ]
+        },
+        "views": {
+            "curling-centre": [
+                {
+                    "id": "curlingCollections",
+                    "name": "Collections",
+                    "type": "tree"
+                },
+                {
+                    "id": "package-outline",
+                    "name": "Outline"
+                }
+            ]
+        },
+        "viewsWelcome": [
+            {
+                "view": "curlingCollections",
+                "contents": "No collections found. To get started, click the button below\n[New Collection](command:evomark-curling.createCollection)"
+            }
+        ],
+        "menus": {
+            "view/title": [
+                {
+                    "command": "evomark-curling.openSettings",
+                    "when": "view == curlingCollections",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "evomark-curling.createCollection",
+                    "when": "view == curlingCollections",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "evomark-curling.refreshCollections",
+                    "when": "view == curlingCollections",
+                    "group": "navigation@3"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "evomark-curling.createRequest",
+                    "when": "view == curlingCollections && viewItem == collection",
+                    "group": "1_requests"
+                },
+                {
+                    "command": "evomark-curling.duplicateCollection",
+                    "when": "view == curlingCollections && viewItem == collection",
+                    "group": "2_collections"
+                },
+                {
+                    "command": "evomark-curling.renameCollection",
+                    "when": "view == curlingCollections && viewItem == collection",
+                    "group": "2_collections"
+                },
+                {
+                    "command": "evomark-curling.deleteCollection",
+                    "when": "view == curlingCollections && viewItem == collection",
+                    "group": "9_destroy"
+                },
+                {
+                    "command": "evomark-curling.renameRequest",
+                    "when": "view == curlingCollections && viewItem == request",
+                    "group": "1_edit"
+                },
+                {
+                    "command": "evomark-curling.duplicateRequest",
+                    "when": "view == curlingCollections && viewItem == request",
+                    "group": "1_edit"
+                },
+                {
+                    "command": "evomark-curling.executeRequest",
+                    "when": "view == curlingCollections && viewItem == request",
+                    "group": "2_functions"
+                },
+                {
+                    "command": "evomark-curling.deleteRequest",
+                    "when": "view == curlingCollections && viewItem == request",
+                    "group": "9_destroy"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "lint": "eslint .",
+        "pretest": "pnpm run lint",
+        "test": "vscode-test"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.15.0",
+        "@tomjs/tsconfig": "^1.7.1",
+        "@tomjs/vite-plugin-vscode": "^3.1.1",
+        "@types/mocha": "^10.0.9",
+        "@types/node": "20.x",
+        "@types/vscode": "^1.95.0",
+        "@vitejs/plugin-vue": "^5.2.0",
+        "@vscode/test-cli": "^0.0.10",
+        "@vscode/test-electron": "^2.4.1",
+        "autoprefixer": "^10.4.20",
+        "eslint": "^9.13.0",
+        "eslint-config-prettier": "^9.1.0",
+        "postcss": "^8.4.49",
+        "tailwindcss": "^3.4.15",
+        "vite": "^5.4.11",
+        "vue": "^3.5.13"
+    },
+    "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
+    "dependencies": {
+        "@tomjs/vscode-webview": "^2.0.1",
+        "@vscode-elements/elements": "^1.8.1",
+        "@vscode/codicons": "^0.0.36",
+        "@vscode/webview-ui-toolkit": "^1.4.0",
+        "@vueuse/core": "^11.3.0",
+        "ace-builds": "^1.36.5",
+        "lodash.debounce": "^4.0.8",
+        "lodash.kebabcase": "^4.1.1",
+        "lodash.lowercase": "^4.3.0",
+        "lodash.startcase": "^4.4.0",
+        "vue3-ace-editor": "^2.2.4"
+    }
+}
