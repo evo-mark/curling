@@ -33,6 +33,10 @@ function activate(context: ExtensionContext) {
 		}
 	});
 
+	const openReqDisposable = commands.registerCommand("evomark-curling.openRequest", (item) => {
+		RequestPanel.render(context, item);
+	});
+
 	commands.registerCommand("evomark-curling.openSettings", () => {
 		commands.executeCommand("workbench.action.openSettings", "@ext:evomark.evomark-curling");
 	});
@@ -66,6 +70,7 @@ function activate(context: ExtensionContext) {
 		duplicateDisposable,
 		renameDisposable,
 		createReqDisposable,
+		openReqDisposable,
 		renameReqDisposable,
 		duplicateReqDisposable,
 		executeReqDisposable,

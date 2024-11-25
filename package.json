@@ -129,6 +129,10 @@
                 "icon": "$(trash)"
             },
             {
+                "command": "evomark-curling.openRequest",
+                "title": "Open"
+            },
+            {
                 "command": "evomark-curling.renameRequest",
                 "title": "Rename"
             },
@@ -211,6 +215,11 @@
                     "command": "evomark-curling.deleteCollection",
                     "when": "view == curlingCollections && viewItem == collection",
                     "group": "9_destroy"
+                },
+                {
+                    "command": "evomark-curling.openRequest",
+                    "when": "view == curlingCollections && viewItem == request",
+                    "group": "0_read"
                 },
                 {
                     "command": "evomark-curling.renameRequest",

@@ -1,5 +1,6 @@
 <template>
 	<main v-if="isHydrated" class="container mx-auto py-4">Collection</main>
+	<div v-else>No Collection</div>
 </template>
 
 <script setup>

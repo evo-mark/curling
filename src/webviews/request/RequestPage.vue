@@ -3,7 +3,7 @@
 		<div class="flex items-stretch mb-4">
 			<Textfield v-model="request.url" class="w-full">
 				<SingleSelect v-model="request.method" slot="content-before" class="w-24" :items="requestMethods" />
-				<vscode-button slot="content-after" class="h-6 flex items-center">
+				<vscode-button slot="content-after" class="h-6 flex items-center" @click="onSendRequest">
 					<i class="codicon codicon-send"></i>
 				</vscode-button>
 			</Textfield>
