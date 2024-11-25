@@ -1,9 +1,10 @@
 import { ExtensionContext, ViewColumn, WebviewPanel, window, ColorThemeKind, commands, workspace } from "vscode";
 import { BasePanelClass } from "../utils";
-import { readFile, rename } from "node:fs/promises";
-import { checkFileExists, getRequestPath, saveRequest } from "../../utils";
+import { readFile, rename, rm, writeFile } from "node:fs/promises";
+import { checkFileExists, getRequestPath, getUniqueFilePath, saveRequest } from "../../utils";
 import { getAllSettings } from "../utils/workspace";
 import { getFileUploadsDirectory } from "../../utils/uploads";
+import { basename, extname, join } from "node:path";
 
 class RequestPanel extends BasePanelClass {
 	public panelName: string = "request";
@@ -56,15 +57,28 @@ class RequestPanel extends BasePanelClass {
 			},
 			async uploadFile(data: any) {
 				const { fileName, fileContent } = data;
-				const buffer = Buffer.from(fileContent);
+				const buffer = Buffer.from(fileContent, "base64");
 
-				const directory = getFileUploadsDirectory();
+				const directory = await getFileUploadsDirectory();
+				let target = join(directory, fileName);
+				target = await getUniqueFilePath(target);
+				await writeFile(target, buffer);
 
 				BasePanelClass.currentPanels.get("request")._panel.webview.postMessage({
 					type: "uploadFile",
 					data: {
-						foo: "bar",
+						filename: basename(target),
 					},
+				});
+				window.showInformationMessage("File uploaded");
+				return;
+			},
+			async deleteFile(data: any) {
+				const { filename } = data;
+				const directory = await getFileUploadsDirectory();
+				let target = join(directory, filename);
+				await rm(target, {
+					force: true,
 				});
 				return;
 			},

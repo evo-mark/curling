@@ -36,13 +36,6 @@
 				<ResponseResults v-else :results="results" @clear="onClearResults" />
 			</div>
 		</vscode-split-layout>
-
-		{{ config }}
-		<!-- <footer>
-			<p class="flex justify-end">
-				<Logo />
-			</p>
-		</footer> -->
 	</main>
 </template>
 

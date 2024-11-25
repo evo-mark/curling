@@ -25,11 +25,16 @@
 				</vscode-table-cell>
 				<vscode-table-cell style="padding-left: 0px">
 					<div v-if="props.files">
+						<div v-if="row.value" class="px-2.5">
+							<div class="text-[0.65rem] bg-teal-700 text-white inline-block px-2 py-1 rounded mt-1">
+								{{ row.value }}
+							</div>
+						</div>
 						<input
+							v-else
 							type="file"
-							:value="row.value"
 							class="w-full bg-transparent appearance-none py-1 px-2.5"
-							@change="onFileSelect"
+							@change="($event) => onFileSelect($event, row)"
 						/>
 					</div>
 					<div v-else>
@@ -79,6 +84,7 @@ import {
 	VscodeCheckbox,
 	VscodeButton,
 } from "@vscode-elements/elements";
+import { vscode } from "../utils";
 
 const modelValue = defineModel({
 	type: Array,
@@ -101,18 +107,36 @@ const addParam = () => {
 };
 
 const onDeleteParam = (index) => {
+	if (props.files) {
+		const filename = modelValue.value[index].value;
+		vscode.post("deleteFile", {
+			filename: filename,
+		});
+	}
 	modelValue.value = modelValue.value.toSpliced(index, 1);
 };
 
-const uploadFile = (file) => {
-	console.log(file);
+const uploadFile = async (file, row) => {
+	console.log(row);
+	const fileContent = await file.arrayBuffer();
+	const base64Content = btoa(
+		new Uint8Array(fileContent).reduce((data, byte) => data + String.fromCharCode(byte), "")
+	);
+	vscode
+		.postAndReceive("uploadFile", {
+			fileName: file.name,
+			fileContent: base64Content,
+		})
+		.then((res) => {
+			row.value = res.filename;
+		});
 };
 
-const onFileSelect = ($event) => {
+const onFileSelect = ($event, row) => {
 	const file = $event.target.files[0];
 	if (file) {
 		const reader = new FileReader();
-		reader.onload = uploadFile.bind(null, file);
+		reader.onload = uploadFile.bind(null, file, row);
 		reader.readAsArrayBuffer(file);
 	}
 };

@@ -1,5 +1,5 @@
 import { workspace } from "vscode";
-import { join } from "node:path";
+import { join, dirname, extname, basename } from "node:path";
 import { access, constants as fsConstants, readFile } from "node:fs/promises";
 import lowerCase from "lodash.lowercase";
 
@@ -50,4 +50,18 @@ async function checkFileExists(path: string): Promise<boolean> {
 	}
 }
 
-export { getWorkspaceRoot, getCollectionRoot, getRequestPath, checkFileExists, getJsonFile };
+async function getUniqueFilePath(filePath: string): Promise<string> {
+	let counter = 1;
+	let dir = dirname(filePath);
+	let ext = extname(filePath);
+	let base = basename(filePath, ext);
+
+	while (await checkFileExists(filePath)) {
+		filePath = join(dir, `${base}-${counter}${ext}`);
+		counter++;
+	}
+
+	return filePath;
+}
+
+export { getUniqueFilePath, getWorkspaceRoot, getCollectionRoot, getRequestPath, checkFileExists, getJsonFile };
