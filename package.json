@@ -294,7 +294,7 @@
         "@tomjs/tsconfig": "^1.7.1",
         "@tomjs/vite-plugin-vscode": "^3.1.1",
         "@types/mocha": "^10.0.10",
-        "@types/node": "~20.17.7",
+        "@types/node": "~20.17.8",
         "@types/vscode": "^1.95.0",
         "@vitejs/plugin-vue": "^5.2.0",
         "@vscode/test-cli": "^0.0.10",

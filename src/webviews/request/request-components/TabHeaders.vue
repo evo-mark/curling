@@ -10,6 +10,9 @@
 				<vscode-table-header-cell>&nbsp;</vscode-table-header-cell>
 			</vscode-table-header>
 			<vscode-table-body slot="body">
+				<vscode-table-row v-if="modelValue?.length === 0" class="flex justify-center py-4 italic">
+					None Set
+				</vscode-table-row>
 				<vscode-table-row v-for="(row, index) in modelValue" :key="index">
 					<vscode-table-cell style="padding-left: 0px">
 						<div class="w-full">
