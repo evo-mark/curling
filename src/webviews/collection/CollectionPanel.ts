@@ -1,7 +1,11 @@
 import { ExtensionContext, ViewColumn, WebviewPanel, window, ColorThemeKind, commands } from "vscode";
 import { BasePanelClass } from "../utils";
-import { readFile, rename } from "node:fs/promises";
-import { checkFileExists, getRequestPath, saveRequest } from "../../utils";
+import {
+	findCollection,
+	readOrCreateCollectionsIndex,
+	saveCollectionsIndex,
+	getCollectionsDirectory,
+} from "../../utils";
 
 class CollectionPanel extends BasePanelClass {
 	public panelName: string = "collection";
@@ -13,7 +17,13 @@ class CollectionPanel extends BasePanelClass {
 	public getApi() {
 		return {
 			async update(data: any) {
-				// return new filename
+				const { collection } = data;
+				const index = await readOrCreateCollectionsIndex();
+				const itemIndex = index.items.findIndex((item) => item.slug == collection.slug);
+				index.items[itemIndex] = collection;
+				const baseCollectionsDir = getCollectionsDirectory();
+				await saveCollectionsIndex(baseCollectionsDir, index);
+				window.showInformationMessage("Saved");
 				return;
 			},
 		};
@@ -37,11 +47,12 @@ class CollectionPanel extends BasePanelClass {
 			BasePanelClass.currentPanels.set(collectionPanel.panelName, collectionPanel);
 		}
 
+		const collection = await findCollection(collectionItem.slug);
 		BasePanelClass.currentPanels.get("collection")._panel.webview.postMessage({
 			type: "hydrate",
 			data: {
 				isDark: window.activeColorTheme.kind === ColorThemeKind.Dark,
-				collection: collectionItem.slug,
+				collection,
 			},
 		});
 	}

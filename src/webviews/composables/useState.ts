@@ -12,7 +12,7 @@ const restoreState = (key = null) => {
 };
 
 const updateState = (state, newState) => {
-	for (const key in newState) {
+	for (const key in state) {
 		state[key] = newState[key];
 	}
 };

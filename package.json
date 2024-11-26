@@ -33,9 +33,47 @@
                 }
             },
             {
+                "id": "request-defaults",
+                "title": "Request Defaults",
+                "order": 2,
+                "type": "object",
+                "properties": {
+                    "curling.requestDefaults.timeout": {
+                        "type": "number",
+                        "default": 0,
+                        "description": "The number of milliseconds before the request times out",
+                        "order": 1
+                    },
+                    "curling.requestDefaults.maxContentLength": {
+                        "type": "number",
+                        "default": 2000,
+                        "description": "Max size of the http response content in bytes allowed",
+                        "order": 2
+                    },
+                    "curling.requestDefaults.maxBodyLength": {
+                        "type": "number",
+                        "default": 2000,
+                        "description": "Max size of the http response request in bytes allowed",
+                        "order": 3
+                    },
+                    "curling.requestDefaults.maxRedirects": {
+                        "type": "number",
+                        "default": 5,
+                        "description": "Max number of redirects to follow, if set to 0, no redirects will be followed",
+                        "order": 4
+                    },
+                    "curling.requestDefaults.socketPath": {
+                        "type": "string",
+                        "default": null,
+                        "description": "UNIX Socket to be used when sending requests, overrides proxy settings",
+                        "order": 5
+                    }
+                }
+            },
+            {
                 "id": "proxy",
                 "title": "Proxy",
-                "order": 2,
+                "order": 3,
                 "type": "object",
                 "properties": {
                     "curling.proxy.enabled": {
@@ -277,6 +315,7 @@
         "@vscode/webview-ui-toolkit": "^1.4.0",
         "@vueuse/core": "^11.3.0",
         "ace-builds": "^1.36.5",
+        "axios": "^1.7.8",
         "lodash.debounce": "^4.0.8",
         "lodash.kebabcase": "^4.1.1",
         "lodash.lowercase": "^4.3.0",

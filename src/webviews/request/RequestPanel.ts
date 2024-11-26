@@ -5,6 +5,7 @@ import { checkFileExists, getRequestPath, getUniqueFilePath, saveRequest } from 
 import { getAllSettings } from "../utils/workspace";
 import { getFileUploadsDirectory } from "../../utils/uploads";
 import { basename, extname, join } from "node:path";
+import { getAxiosInstance } from "../../utils/axios";
 
 class RequestPanel extends BasePanelClass {
 	public panelName: string = "request";
@@ -89,6 +90,8 @@ class RequestPanel extends BasePanelClass {
 		const requestPath = getRequestPath(requestItem.collectionSlug, requestItem.slug, requestItem.method);
 		const requestRaw = await readFile(requestPath, "utf-8");
 		const request = JSON.parse(requestRaw);
+
+		console.log(getAxiosInstance(context));
 
 		if (BasePanelClass.currentPanels.get("request")) {
 			BasePanelClass.currentPanels.get("request")._panel.reveal(ViewColumn.One);

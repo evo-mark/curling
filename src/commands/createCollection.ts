@@ -38,6 +38,16 @@ export async function createCollection() {
 	index.items.push({
 		label: collectionName,
 		slug: collectionSlug,
+		headers: [],
+		auth: {},
+		scripts: {
+			pre: "",
+			preError: "",
+			post: "",
+			postError: "",
+		},
+		proxy: {},
+		secrets: [],
 	});
 
 	await saveCollectionsIndex(dirPath, index);

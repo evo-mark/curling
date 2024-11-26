@@ -12,6 +12,11 @@ function getCollectionDirectory(collection: string): string {
 	return join(root, collection);
 }
 
+async function findCollection(slug: string) {
+	const index = await readOrCreateCollectionsIndex();
+	return index.items.find((item) => item.slug === slug);
+}
+
 async function readOrCreateCollectionsIndex(baseDir?: string) {
 	if (!baseDir) {
 		baseDir = getCollectionsDirectory();
@@ -47,4 +52,10 @@ async function saveCollectionsIndex(baseDir, content) {
 	return true;
 }
 
-export { readOrCreateCollectionsIndex, saveCollectionsIndex, getCollectionDirectory };
+export {
+	readOrCreateCollectionsIndex,
+	saveCollectionsIndex,
+	getCollectionDirectory,
+	getCollectionsDirectory,
+	findCollection,
+};
