@@ -1,4 +1,4 @@
-import { requestMethods } from "./../../utils/requests";
+import { requestMethods, saveResponse } from "./../../utils/requests";
 import { ExtensionContext, ViewColumn, WebviewPanel, window, ColorThemeKind, commands, workspace } from "vscode";
 import { BasePanelClass } from "../utils";
 import { readFile, rename, rm, writeFile } from "node:fs/promises";
@@ -7,6 +7,7 @@ import { getAllSettings } from "../utils/workspace";
 import { getFileUploadsDirectory } from "../../utils/uploads";
 import { basename, extname, join } from "node:path";
 import { getAxiosInstance } from "../../utils/axios";
+import { AxiosResponse } from "axios";
 
 class RequestPanel extends BasePanelClass {
 	public panelName: string = "request";
@@ -50,7 +51,7 @@ class RequestPanel extends BasePanelClass {
 			async send(data: any) {
 				const { requestSlug, collectionSlug, requestMethod } = data;
 
-				const response = await commands.executeCommand(
+				const response: AxiosResponse = await commands.executeCommand(
 					"evomark-curling.executeRequest",
 					requestSlug,
 					requestMethod,
@@ -58,10 +59,13 @@ class RequestPanel extends BasePanelClass {
 					this._context
 				);
 
+				const [filename, payload] = await saveResponse(collectionSlug, requestSlug, requestMethod, response);
+
 				BasePanelClass.currentPanels.get("request")._panel.webview.postMessage({
 					type: "send",
 					data: {
-						response,
+						response: payload,
+						filename,
 					},
 				});
 				// return new filename

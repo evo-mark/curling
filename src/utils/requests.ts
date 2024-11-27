@@ -1,5 +1,8 @@
-import { writeFile } from "node:fs/promises";
-import { checkFileExists, getJsonFile, getRequestPath } from "./file";
+import { writeFile, mkdir } from "node:fs/promises";
+import { checkFileExists, getJsonFile, getRequestPath, getWorkspaceRoot } from "./file";
+import { AxiosResponse } from "axios";
+import { join } from "node:path";
+import { createHash } from "node:crypto";
 
 interface CurlingRequest {
 	url: string;
@@ -28,6 +31,49 @@ export async function saveRequest(path: string, content: Record<string, unknown>
 	content.lastUpdated = Date.now();
 	await writeFile(path, JSON.stringify(content, undefined, 2));
 	return true;
+}
+
+function getResponseDirectory() {
+	const root = getWorkspaceRoot();
+	return join(root, ".curling", "responses");
+}
+
+function getResponseFilename(...params: string[]): string {
+	const hash = createHash("md5").update(params.join("_")).digest("hex");
+	return hash + "-" + Date.now() + ".json";
+}
+
+export async function saveResponse(
+	collectionSlug: string,
+	requestSlug: string,
+	requestMethod: string,
+	response: AxiosResponse
+) {
+	const dir = getResponseDirectory();
+	await mkdir(dir, {
+		recursive: true,
+	});
+	const filename = getResponseFilename(collectionSlug, requestSlug, requestMethod);
+	const time = new Date().toISOString().substring(0, 16);
+
+	const payload = {
+		time,
+		data: response.data,
+		status: response.status,
+		statusText: response.statusText,
+		headers: response.headers,
+	};
+
+	await writeFile(join(dir, filename), JSON.stringify(payload));
+	const ignoreExists = await checkFileExists(join(dir, ".gitignore"));
+
+	if (!ignoreExists) {
+		const content = `*
+!.gitignore`;
+		await writeFile(join(dir, ".gitignore"), content);
+	}
+
+	return [filename, payload];
 }
 
 export const requestMethods = [

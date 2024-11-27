@@ -36,6 +36,6 @@ export async function executeRequest(
 		url: request.url,
 	});
 
-	return response.data;
+	return response;
 	window.showInformationMessage(`Not implemented`);
 }

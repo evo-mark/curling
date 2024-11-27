@@ -34,7 +34,6 @@
 			<div slot="end" class="split-layout-content flex flex-col justify-center items-center">
 				<ResponseLanding v-if="!results?.length" :os="os" @send="onSendRequest" />
 				<ResponseResults v-else :results="results" @clear="onClearResults" />
-				<button @click="onPermission">Clipboard</button>
 			</div>
 		</vscode-split-layout>
 	</main>
@@ -64,7 +63,9 @@ import TabHeaders from "./request-components/TabHeaders.vue";
 import TabAuth from "./request-components/TabAuth.vue";
 
 const currentTab = ref(0);
-const results = ref([]);
+const resultsList = ref([]);
+const loadedResult = ref(null);
+
 const requestMethods = ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"];
 
 provideVSCodeDesignSystem();
@@ -126,9 +127,4 @@ onMounted(() => {
 		vscode.post("keydown", keyEvent);
 	});
 });
-const onPermission = () => {
-	navigator.permissions.query({ name: "clipboard-read" }).then((result) => {
-		console.log(result.state); // Should be "granted" or "prompt"
-	});
-};
 </script>
