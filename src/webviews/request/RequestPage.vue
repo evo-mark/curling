@@ -34,6 +34,7 @@
 			<div slot="end" class="split-layout-content flex flex-col justify-center items-center">
 				<ResponseLanding v-if="!results?.length" :os="os" @send="onSendRequest" />
 				<ResponseResults v-else :results="results" @clear="onClearResults" />
+				<button @click="onPermission">Clipboard</button>
 			</div>
 		</vscode-split-layout>
 	</main>
@@ -48,7 +49,7 @@ import {
 	VscodeTabHeader,
 	VscodeTabPanel,
 } from "@vscode-elements/elements";
-import { toValue, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { vscode } from "../utils";
 import { useState } from "../composables";
 import { deepToRaw } from "../helpers";
@@ -87,12 +88,47 @@ const onSave = () => {
 };
 
 const onSendRequest = () => {
-	vscode.postAndReceive("send").then((res) => {
-		results.value.push(res);
-	});
+	vscode
+		.postAndReceive(
+			"send",
+			{
+				requestSlug: request.value.slug,
+				requestMethod: request.value.method,
+				collectionSlug: collection.value,
+			},
+			{
+				interval: 5000,
+				timeout: 10000,
+			}
+		)
+		.then((res) => {
+			results.value.push(res);
+		});
 };
 
 const onClearResults = () => {
 	results.value = [];
+};
+
+onMounted(() => {
+	document.addEventListener("keydown", (ev) => {
+		const keyEvent = {
+			altKey: ev.altKey,
+			code: ev.code,
+			ctrlKey: ev.ctrlKey,
+			isComposing: ev.isComposing,
+			key: ev.key,
+			location: ev.location,
+			metaKey: ev.metaKey,
+			repeat: ev.repeat,
+			shiftKey: ev.shiftKey,
+		};
+		vscode.post("keydown", keyEvent);
+	});
+});
+const onPermission = () => {
+	navigator.permissions.query({ name: "clipboard-read" }).then((result) => {
+		console.log(result.state); // Should be "granted" or "prompt"
+	});
 };
 </script>

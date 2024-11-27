@@ -20,7 +20,7 @@ function getCollectionRoot(collection: string): string {
 	return join(root, ".curling", "collections", collection);
 }
 
-async function getJsonFile(path: string): Promise<Record<string, unknown>> {
+async function getJsonFile<T>(path: string): Promise<T> {
 	try {
 		const raw = await readFile(path, "utf8");
 		return JSON.parse(raw);

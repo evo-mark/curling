@@ -2,6 +2,35 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getWorkspaceRoot } from "./file";
 
+interface CurlingHeader {
+	name: string;
+	value: string;
+	active: boolean;
+}
+
+interface CurlingProxy {
+	enable: boolean;
+	protocol: "HTTP" | "HTTPS";
+	auth: boolean;
+	port: number;
+	username: string;
+}
+
+interface CurlingCollection {
+	label: string;
+	slug: string;
+	headers: CurlingHeader[];
+	auth: Record<string, string>;
+	scripts: {
+		pre: string;
+		preError: string;
+		post: string;
+		postError: string;
+	};
+	proxy: CurlingProxy;
+	secrets: unknown[];
+}
+
 function getCollectionsDirectory(): string {
 	const root = getWorkspaceRoot();
 	return join(root, ".curling", "collections");
@@ -12,7 +41,7 @@ function getCollectionDirectory(collection: string): string {
 	return join(root, collection);
 }
 
-async function findCollection(slug: string) {
+async function findCollection(slug: string): Promise<CurlingCollection> {
 	const index = await readOrCreateCollectionsIndex();
 	return index.items.find((item) => item.slug === slug);
 }

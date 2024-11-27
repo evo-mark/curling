@@ -1,5 +1,15 @@
 import { writeFile } from "node:fs/promises";
-import { checkFileExists } from "./file";
+import { checkFileExists, getJsonFile, getRequestPath } from "./file";
+
+interface CurlingRequest {
+	url: string;
+	method: "GET" | "POST" | "PATCH" | "PUT" | "OPTIONS" | "DELETE";
+}
+
+export async function findRequest(slug: string, method: string, collectionSlug: string) {
+	const path = getRequestPath(collectionSlug, slug, method);
+	return await getJsonFile<CurlingRequest>(path);
+}
 
 /**
  * Given an absolute path and JSON object, saves the request object to file

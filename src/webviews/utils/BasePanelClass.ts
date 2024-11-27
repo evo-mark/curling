@@ -12,9 +12,11 @@ export abstract class BasePanelClass {
 	public static currentPanels: Map<string, BasePanelClass | undefined> = new Map();
 	public readonly _panel: WebviewPanel;
 	public _disposables: Disposable[] = [];
+	protected _context: ExtensionContext;
 
 	constructor(panel: WebviewPanel, context: ExtensionContext, url: string, name: string) {
 		this._panel = panel;
+		this._context = context;
 
 		this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 		this._panel.webview.html = BasePanelClass.setupPage(this._panel.webview, context, {
@@ -48,9 +50,28 @@ export abstract class BasePanelClass {
 		context: ExtensionContext,
 		{ url = "", name = null } = {} as PageOptions
 	) {
-		return process.env.VITE_DEV_SERVER_URL
+		let html = process.env.VITE_DEV_SERVER_URL
 			? __getWebviewHtml__(`${process.env.VITE_DEV_SERVER_URL}${url}`)
 			: __getWebviewHtml__(webview, context, name);
+
+		const insert = `<script>window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener("message", (event) => {
+            const { type, data } = event.data.data;
+            if (type === "keydown") {
+                window.dispatchEvent(new KeyboardEvent("keydown", data));
+            }
+        });
+        for (const command of ['selectAll', 'copy', 'paste', 'cut', 'undo', 'redo']) {
+            document.addEventListener(command, (e) => {
+                console.log(e.clipboardData.getData("text"));
+              document.getElementById('webview-patch-iframe').contentWindow.postMessage({'command': 'execCommand', 'data': command}, '*');
+            });
+          }
+        });</script></head>`;
+
+		html = html.replace("</head>", insert);
+
+		return html;
 	}
 
 	public static setupWebviewHooks(

@@ -117,7 +117,6 @@ const onDeleteParam = (index) => {
 };
 
 const uploadFile = async (file, row) => {
-	console.log(row);
 	const fileContent = await file.arrayBuffer();
 	const base64Content = btoa(
 		new Uint8Array(fileContent).reduce((data, byte) => data + String.fromCharCode(byte), "")

@@ -45,10 +45,12 @@ export async function getAxiosInstance(context: ExtensionContext): Promise<axios
 	if (!instance) {
 		const settings = getAllSettings();
 		const proxy = await getProxySettings(settings.proxy, context);
-		instance = axios.create({
+
+		const axiosConfig = {
 			proxy,
-			...getRequestDefaults(settings),
-		});
+			...getRequestDefaults(settings.requestDefaults),
+		};
+		instance = axios.create(axiosConfig);
 	}
 
 	return instance;

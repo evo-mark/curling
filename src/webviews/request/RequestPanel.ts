@@ -1,3 +1,4 @@
+import { requestMethods } from "./../../utils/requests";
 import { ExtensionContext, ViewColumn, WebviewPanel, window, ColorThemeKind, commands, workspace } from "vscode";
 import { BasePanelClass } from "../utils";
 import { readFile, rename, rm, writeFile } from "node:fs/promises";
@@ -47,10 +48,20 @@ class RequestPanel extends BasePanelClass {
 				return;
 			},
 			async send(data: any) {
+				const { requestSlug, collectionSlug, requestMethod } = data;
+
+				const response = await commands.executeCommand(
+					"evomark-curling.executeRequest",
+					requestSlug,
+					requestMethod,
+					collectionSlug,
+					this._context
+				);
+
 				BasePanelClass.currentPanels.get("request")._panel.webview.postMessage({
 					type: "send",
 					data: {
-						foo: "bar",
+						response,
 					},
 				});
 				// return new filename
@@ -91,8 +102,6 @@ class RequestPanel extends BasePanelClass {
 		const requestRaw = await readFile(requestPath, "utf-8");
 		const request = JSON.parse(requestRaw);
 
-		console.log(getAxiosInstance(context));
-
 		if (BasePanelClass.currentPanels.get("request")) {
 			BasePanelClass.currentPanels.get("request")._panel.reveal(ViewColumn.One);
 		} else {
@@ -102,6 +111,7 @@ class RequestPanel extends BasePanelClass {
 				ViewColumn.One,
 				{
 					enableScripts: true,
+					retainContextWhenHidden: true,
 				}
 			);
 
