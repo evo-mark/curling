@@ -1,6 +1,7 @@
 import { window, commands } from "vscode";
 import { constants as fsConstants, access, writeFile } from "node:fs/promises";
 import { getWorkspaceRoot, slugify, getRequestPath } from "../utils";
+import { v4 as uuidV4 } from "uuid";
 
 export async function createRequest(item) {
 	const root = getWorkspaceRoot();
@@ -54,6 +55,7 @@ export async function createRequest(item) {
 	if (!selectedMethod) return;
 
 	const json = {
+		id: uuidV4(),
 		label: requestName,
 		slug: requestSlug,
 		method: selectedMethod.label,

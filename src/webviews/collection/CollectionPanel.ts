@@ -1,4 +1,4 @@
-import { ExtensionContext, ViewColumn, WebviewPanel, window, ColorThemeKind, commands } from "vscode";
+import { ExtensionContext, ViewColumn, WebviewPanel, window, ColorThemeKind, commands, SecretStorage } from "vscode";
 import { BasePanelClass } from "../utils";
 import {
 	findCollection,
@@ -6,6 +6,7 @@ import {
 	saveCollectionsIndex,
 	getCollectionsDirectory,
 } from "../../utils";
+import { v4 as uuidV4 } from "uuid";
 
 class CollectionPanel extends BasePanelClass {
 	public panelName: string = "collection";
@@ -15,9 +16,21 @@ class CollectionPanel extends BasePanelClass {
 	}
 
 	public getApi() {
+		const self = this;
 		return {
 			async update(data: any) {
 				const { collection } = data;
+				if (!collection.id) {
+					collection.id = uuidV4();
+				}
+
+				if (collection.proxy.password) {
+					const key = `curling.collections.${collection.id}.proxy-password`;
+					await self._context.secrets.store(key, collection.proxy.password);
+				}
+
+				delete collection.proxy.password;
+
 				const index = await readOrCreateCollectionsIndex();
 				const itemIndex = index.items.findIndex((item) => item.slug == collection.slug);
 				index.items[itemIndex] = collection;
@@ -39,6 +52,7 @@ class CollectionPanel extends BasePanelClass {
 				ViewColumn.One,
 				{
 					enableScripts: true,
+					retainContextWhenHidden: true,
 				}
 			);
 
@@ -48,6 +62,7 @@ class CollectionPanel extends BasePanelClass {
 		}
 
 		const collection = await findCollection(collectionItem.slug);
+		collection.proxy.password = "";
 		BasePanelClass.currentPanels.get("collection")._panel.webview.postMessage({
 			type: "hydrate",
 			data: {

@@ -1,4 +1,4 @@
-import { Disposable, ExtensionContext, WebviewPanel, Webview } from "vscode";
+import { Disposable, ExtensionContext, WebviewPanel, Webview, SecretStorage } from "vscode";
 
 interface PageOptions {
 	url: string;
@@ -11,8 +11,8 @@ export abstract class BasePanelClass {
 	public static currentPanel: BasePanelClass | undefined;
 	public static currentPanels: Map<string, BasePanelClass | undefined> = new Map();
 	public readonly _panel: WebviewPanel;
+	public readonly _context: ExtensionContext;
 	public _disposables: Disposable[] = [];
-	protected _context: ExtensionContext;
 
 	constructor(panel: WebviewPanel, context: ExtensionContext, url: string, name: string) {
 		this._panel = panel;

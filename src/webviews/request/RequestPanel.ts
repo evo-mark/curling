@@ -7,6 +7,7 @@ import { getAllSettings } from "../utils/workspace";
 import { getFileUploadsDirectory } from "../../utils/uploads";
 import { basename, extname, join } from "node:path";
 import { getAxiosInstance } from "../../utils/axios";
+import { v4 as uuidV4 } from "uuid";
 import { AxiosResponse } from "axios";
 
 class RequestPanel extends BasePanelClass {
@@ -20,6 +21,9 @@ class RequestPanel extends BasePanelClass {
 		return {
 			async update(data: any) {
 				let requestPath = data.path;
+				if (!data.request.id) {
+					data.request.id = uuidV4();
+				}
 
 				const maybeNewPath = getRequestPath(data.collection, data.request.slug, data.request.method);
 				// If the request method has changed, we need to rename the file
@@ -115,7 +119,6 @@ class RequestPanel extends BasePanelClass {
 				ViewColumn.One,
 				{
 					enableScripts: true,
-					retainContextWhenHidden: true,
 				}
 			);
 

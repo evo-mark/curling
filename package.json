@@ -185,6 +185,10 @@
             {
                 "command": "evomark-curling.deleteRequest",
                 "title": "Delete"
+            },
+            {
+                "command": "evomark-curling.paste",
+                "title": "Paste"
             }
         ],
         "viewsContainers": {
@@ -279,6 +283,12 @@
                     "when": "view == curlingCollections && viewItem == request",
                     "group": "9_destroy"
                 }
+            ],
+            "webview/context": [
+                {
+                    "command": "evomark-curling.paste",
+                    "when": "webviewId == 'showRequestPage' && webviewSection == 'request-url'"
+                }
             ]
         }
     },
@@ -309,17 +319,18 @@
     },
     "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
     "dependencies": {
-        "@tomjs/vscode-webview": "^2.0.1",
+        "@tomjs/vscode-webview": "^2.0.2",
         "@vscode-elements/elements": "^1.9.0",
         "@vscode/codicons": "^0.0.36",
         "@vscode/webview-ui-toolkit": "^1.4.0",
-        "@vueuse/core": "^11.3.0",
+        "@vueuse/core": "^12.0.0",
         "ace-builds": "^1.36.5",
         "axios": "^1.7.8",
         "lodash.debounce": "^4.0.8",
         "lodash.kebabcase": "^4.1.1",
         "lodash.lowercase": "^4.3.0",
         "lodash.startcase": "^4.4.0",
+        "uuid": "^11.0.3",
         "vue3-ace-editor": "^2.2.4"
     }
 }

@@ -14,6 +14,7 @@ interface CurlingProxy {
 	auth: boolean;
 	port: number;
 	username: string;
+	password?: string;
 }
 
 interface CurlingCollection {

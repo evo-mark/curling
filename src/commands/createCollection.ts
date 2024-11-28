@@ -3,6 +3,7 @@ import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { getWorkspaceRoot, slugify } from "../utils";
 import { readOrCreateCollectionsIndex, saveCollectionsIndex } from "../utils/collections";
+import { v4 as uuidV4 } from "uuid";
 
 export async function createCollection() {
 	const root = getWorkspaceRoot();
@@ -36,6 +37,7 @@ export async function createCollection() {
 	}
 
 	index.items.push({
+		id: uuidV4(),
 		label: collectionName,
 		slug: collectionSlug,
 		headers: [],
