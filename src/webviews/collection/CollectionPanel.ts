@@ -28,8 +28,13 @@ class CollectionPanel extends BasePanelClass {
 					const key = `curling.collections.${collection.id}.proxy-password`;
 					await self._context.secrets.store(key, collection.proxy.password);
 				}
+				if (collection.auth.password) {
+					const key = `curling.collections.${collection.id}.auth-password`;
+					await self._context.secrets.store(key, collection.auth.password);
+				}
 
 				delete collection.proxy.password;
+				delete collection.auth.password;
 
 				const index = await readOrCreateCollectionsIndex();
 				const itemIndex = index.items.findIndex((item) => item.slug == collection.slug);

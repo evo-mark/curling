@@ -41,7 +41,9 @@ export async function createCollection() {
 		label: collectionName,
 		slug: collectionSlug,
 		headers: [],
-		auth: {},
+		auth: {
+			type: "none",
+		},
 		scripts: {
 			pre: "",
 			preError: "",
