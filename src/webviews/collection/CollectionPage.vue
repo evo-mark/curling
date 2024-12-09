@@ -8,15 +8,17 @@
 			}"
 			@vsc-tabs-select="onTabSelect"
 		>
-			<vscode-tab-header slot="header" :active="currentTab === 0">Headers</vscode-tab-header>
+			<vscode-tab-header slot="header" :active="currentTab === 0">Globals</vscode-tab-header>
+			<TabGlobals v-model="collection.globals" />
+			<vscode-tab-header slot="header" :active="currentTab === 1">Headers</vscode-tab-header>
 			<TabHeaders v-model="collection.headers" />
-			<vscode-tab-header slot="header" :active="currentTab === 1">Auth</vscode-tab-header>
+			<vscode-tab-header slot="header" :active="currentTab === 2">Auth</vscode-tab-header>
 			<TabAuth v-model="collection.auth" :dark="isDark" />
-			<vscode-tab-header slot="header" :active="currentTab === 2">Scripts</vscode-tab-header>
+			<vscode-tab-header slot="header" :active="currentTab === 3">Scripts</vscode-tab-header>
 			<TabScripts v-model="collection.scripts" :dark="isDark" />
-			<vscode-tab-header slot="header" :active="currentTab === 3">Proxy</vscode-tab-header>
+			<vscode-tab-header slot="header" :active="currentTab === 4">Proxy</vscode-tab-header>
 			<TabProxy v-model="collection.proxy" />
-			<vscode-tab-header slot="header" :active="currentTab === 3">Secrets</vscode-tab-header>
+			<vscode-tab-header slot="header" :active="currentTab === 5">Secrets</vscode-tab-header>
 			<TabSecrets v-model="collection.secrets" />
 		</vscode-tabs>
 		<div class="flex justify-end mt-8">
@@ -31,7 +33,7 @@ import { provideVSCodeDesignSystem } from "@vscode/webview-ui-toolkit";
 import { ref } from "vue";
 import { vscode } from "../utils";
 import { useState } from "../composables";
-import { TabHeaders, TabAuth, TabScripts, TabProxy, TabSecrets } from "./collection-components";
+import { TabHeaders, TabAuth, TabScripts, TabProxy, TabSecrets, TabGlobals } from "./collection-components";
 import { deepToRaw } from "../helpers";
 
 provideVSCodeDesignSystem();

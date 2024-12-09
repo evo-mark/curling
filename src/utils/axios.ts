@@ -11,8 +11,6 @@ interface ProxyConfigSettings {
 	username: string;
 }
 
-let instance: axios.AxiosInstance;
-
 async function getProxySettings(proxySettings: ProxyConfigSettings, context: ExtensionContext) {
 	const final = {} as axios.AxiosProxyConfig;
 	if (proxySettings.enabled !== true) return;
@@ -42,16 +40,12 @@ function getRequestDefaults(settings: Partial<axios.AxiosRequestConfig>) {
 }
 
 export async function getAxiosInstance(context: ExtensionContext): Promise<axios.AxiosInstance> {
-	if (!instance) {
-		const settings = getAllSettings();
-		const proxy = await getProxySettings(settings.proxy, context);
+	const settings = getAllSettings();
+	const proxy = await getProxySettings(settings.proxy, context);
 
-		const axiosConfig = {
-			proxy,
-			...getRequestDefaults(settings.requestDefaults),
-		};
-		instance = axios.create(axiosConfig);
-	}
-
-	return instance;
+	const axiosConfig = {
+		proxy,
+		...getRequestDefaults(settings.requestDefaults),
+	};
+	return axios.create(axiosConfig);
 }

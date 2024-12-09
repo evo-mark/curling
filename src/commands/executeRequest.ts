@@ -29,19 +29,21 @@ export async function executeRequest(
 	const request = await findRequest(requestSlug, requestMethod, collectionSlug);
 
 	const axios = await getAxiosInstance(context);
-	const preFunction = collection.scripts?.pre
-		? parseFunction<InternalAxiosRequestConfig>(collection.scripts.pre)
-		: undefined;
-	const preErrorFunction = collection.scripts?.preError
-		? parseFunction<InternalAxiosRequestConfig>(collection.scripts.preError)
-		: undefined;
-	const postFunction = collection.scripts?.post ? parseFunction<AxiosResponse>(collection.scripts.post) : undefined;
-	const postErrorFunction = collection.scripts?.postError
-		? parseFunction<AxiosResponse>(collection.scripts.postError)
-		: undefined;
 
-	axios.interceptors.request.use(preFunction, preErrorFunction);
-	axios.interceptors.response.use(postFunction, postErrorFunction);
+	/* *********************************************
+	 * SCRIPTS
+	 * ******************************************* */
+	const scriptObjects = [collection.scripts, request.scripts];
+
+	scriptObjects.forEach((obj) => {
+		const preFunction = obj?.pre ? parseFunction<InternalAxiosRequestConfig>(obj.pre) : undefined;
+		const preErrorFunction = obj?.preError ? parseFunction<InternalAxiosRequestConfig>(obj.preError) : undefined;
+		const postFunction = obj?.post ? parseFunction<AxiosResponse>(obj.post) : undefined;
+		const postErrorFunction = obj?.postError ? parseFunction<AxiosResponse>(obj.postError) : undefined;
+
+		axios.interceptors.request.use(preFunction, preErrorFunction);
+		axios.interceptors.response.use(postFunction, postErrorFunction);
+	});
 
 	const response = await axios({
 		method: request.method,

@@ -1,5 +1,5 @@
 <template>
-	<vscode-textfield :value="modelValue" @input="onInput"></vscode-textfield>
+	<vscode-textfield class="px-2 py-0.5" :value="modelValue" @input="onInput"></vscode-textfield>
 </template>
 
 <script setup>

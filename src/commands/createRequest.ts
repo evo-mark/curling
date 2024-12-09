@@ -73,6 +73,15 @@ export async function createRequest(item) {
 			xml: "",
 			text: "",
 		},
+		auth: {
+			type: "none",
+		},
+		scripts: {
+			pre: "",
+			preError: "",
+			post: "",
+			postError: "",
+		},
 	};
 
 	const requestPath = getRequestPath(collection.slug, requestSlug, selectedMethod.label);

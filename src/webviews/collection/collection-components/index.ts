@@ -1,3 +1,4 @@
+export { default as TabGlobals } from "./TabGlobals.vue";
 export { default as TabAuth } from "./TabAuth.vue";
 export { default as TabHeaders } from "../../request/request-components/TabHeaders.vue";
 export { default as TabProxy } from "./TabProxy.vue";

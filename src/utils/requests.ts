@@ -3,10 +3,17 @@ import { checkFileExists, getJsonFile, getRequestPath, getWorkspaceRoot } from "
 import { AxiosResponse } from "axios";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
+import type { CurlingHeader, CurlingVariable, CurlingScripts } from "./types";
 
 interface CurlingRequest {
+	id: string;
+	label: string;
+	slug: string;
 	url: string;
 	method: "GET" | "POST" | "PATCH" | "PUT" | "OPTIONS" | "DELETE";
+	headers: CurlingHeader[];
+	query: CurlingVariable[];
+	scripts: CurlingScripts;
 }
 
 export async function findRequest(slug: string, method: string, collectionSlug: string) {

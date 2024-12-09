@@ -40,6 +40,10 @@ export async function createCollection() {
 		id: uuidV4(),
 		label: collectionName,
 		slug: collectionSlug,
+		globals: {
+			baseUrl: "",
+			requestType: "http",
+		},
 		headers: [],
 		auth: {
 			type: "none",

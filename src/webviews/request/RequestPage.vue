@@ -25,7 +25,9 @@
 					<vscode-tab-header slot="header" :active="currentTab === 2">Headers</vscode-tab-header>
 					<TabHeaders v-model="request.headers" />
 					<vscode-tab-header slot="header" :active="currentTab === 3">Auth</vscode-tab-header>
-					<TabAuth />
+					<TabAuth v-model="request.auth" />
+					<vscode-tab-header slot="header" :active="currentTab === 4">Scripts</vscode-tab-header>
+					<TabScripts v-model="request.scripts" :dark="isDark" />
 				</vscode-tabs>
 				<div class="flex justify-end mt-8">
 					<vscode-button @click="onSave">Update Request</vscode-button>
@@ -46,7 +48,6 @@ import {
 	VscodeSplitLayout,
 	VscodeTabs,
 	VscodeTabHeader,
-	VscodeTabPanel,
 } from "@vscode-elements/elements";
 import { onMounted, ref } from "vue";
 import { vscode } from "../utils";
@@ -61,6 +62,7 @@ import TabQuery from "./request-components/TabQuery.vue";
 import TabBody from "./request-components/TabBody.vue";
 import TabHeaders from "./request-components/TabHeaders.vue";
 import TabAuth from "./request-components/TabAuth.vue";
+import TabScripts from "../collection/collection-components/TabScripts.vue";
 
 const currentTab = ref(0);
 const resultsList = ref([]);

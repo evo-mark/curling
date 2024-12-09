@@ -1,12 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getWorkspaceRoot } from "./file";
-
-interface CurlingHeader {
-	name: string;
-	value: string;
-	active: boolean;
-}
+import type { CurlingHeader, CurlingScripts } from "./types";
 
 interface CurlingProxy {
 	enable: boolean;
@@ -22,12 +17,7 @@ interface CurlingCollection {
 	slug: string;
 	headers: CurlingHeader[];
 	auth: Record<string, string>;
-	scripts: {
-		pre: string;
-		preError: string;
-		post: string;
-		postError: string;
-	};
+	scripts: CurlingScripts;
 	proxy: CurlingProxy;
 	secrets: unknown[];
 }

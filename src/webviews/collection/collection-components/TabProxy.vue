@@ -46,9 +46,8 @@
 					</div>
 					<div>
 						<p>Password</p>
-						<TextField
+						<Password
 							v-model="modelValue.password"
-							type="password"
 							placeholder="Leave blank to keep the same"
 							:disabled="!modelValue.enable"
 						/>
@@ -63,6 +62,7 @@
 import { VscodeTabPanel, VscodeCheckbox } from "@vscode-elements/elements";
 import SingleSelect from "../../components/input/SingleSelect.vue";
 import TextField from "../../components/input/Text.vue";
+import Password from "../../components/input/Password.vue";
 
 const modelValue = defineModel({
 	type: Object,
